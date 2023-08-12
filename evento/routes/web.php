@@ -35,3 +35,7 @@ Route::resource('/usuario', UsuarioController::class)->middleware(Autenticador::
 Route::get('login/google', [SocialiteController::class, 'redirectToProvider'])->name('login');
 Route::get('login/google/callback', [SocialiteController::class, 'hendProviderCallback']);
 Route::get('login/logout', [SocialiteController::class, 'destroy'])->name('logout');
+
+Route::get('/email', function (){
+    return new \App\Mail\NovoUsuario();
+});
