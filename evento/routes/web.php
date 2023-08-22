@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\Autenticador;
@@ -28,7 +29,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home.index')->secur
 
 //usuarios
 Route::resource('/usuario', UsuarioController::class)->middleware(Autenticador::class);
-
+//Produtos
+Route::resource('/estoque', EstoqueController::class)->middleware(Autenticador::class);
 
 //Route::get('login/google', "SocialiteController@redirectToProvider");
 //Route::get('login/google/callback', 'SocialiteController@handleProviderCalback');
