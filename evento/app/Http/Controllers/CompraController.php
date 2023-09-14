@@ -53,18 +53,22 @@ class CompraController extends Controller
 
     public function store(Request $request)
     {
+        $info = $request;
+        //dd($info);
         $usuario = Auth::user()->id;
-        $id_estoque = $request->input('id_estoque');
-        $quantidadeInicial = $request->input('quantidadeInicial');
+        $quantidade = $request->input('quantidade');
+        $estoque_id = $request->input('estoque_id');
         $valor = 0;
 
-        for ($i = 0; $i < count($id_estoque); $i++) {
+        for ($i = 0; $i < count($estoque_id); $i++) {
             $valorProduto = DB::table('estoques')
-                ->where('id_produto_estoque', $id_estoque[$i])
+                ->where('id_produto_estoque', $estoque_id[$i])
                 ->value('valor_venda');
-            $valor = $valor + ($valorProduto * $quantidadeInicial[$i]);
+            $valor = $valor + ($valorProduto * $quantidade[$i]);
+
             echo ("valor da compra é: $valor - ");
         }
+
         $dados = [
             'id' => $usuario,
             'valor' => $valor,
@@ -72,23 +76,30 @@ class CompraController extends Controller
         ];
         $idInserido = DB::table('compras')->insertGetId($dados);
 
+        $pagamento = [
+            'id' => $idInserido,
+            'valor' => $valor
+        ];
+
         // Verifique se os arrays têm o mesmo tamanho (mesmo número de produtos)
-        if (count($id_estoque) == count($quantidadeInicial)) {
-            for ($i = 0; $i < count($id_estoque); $i++) {
-                echo ("$id_estoque[$i] -");
-                echo ("$quantidadeInicial[$i]");
+        if (count($estoque_id) == count($quantidade)) {
+            for ($i = 0; $i < count($estoque_id); $i++) {
+                echo ("$estoque_id[$i] -");
+                echo ("$quantidade[$i]");
 
                 $dados2 = [
                     'id_compra' => $idInserido,
-                    'id_produto_estoque' => $id_estoque[$i],
-                    'quantidade_compra' => $quantidadeInicial[$i],
-                    'quantidade_restante' => $quantidadeInicial[$i]
+                    'id_produto_estoque' => $estoque_id[$i],
+                    'quantidade_compra' => $quantidade[$i],
+                    'quantidade_restante' => $quantidade[$i]
                 ];
                 DB::table('compras_estoque')->insert($dados2);
 
             }
         }
-        return redirect('/home')->with('mensagem.sucesso', 'Produto inserido com sucesso!');
+        //return redirect('https://developer.modetc.net.br');
+        return redirect('/checkout')->with('pagamnto', $pagamento);
+        //return redirect()->away('https://www.google.com');
     }
 
     /**
