@@ -5,6 +5,7 @@ use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\VendasController;
@@ -28,7 +29,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index')->secure();
 //Route::get('/', function () {
 //    return view('welcome');
 //});
-
+Route::get('/produto/{hash}', [ProdutoController::class, 'processaRetirada']);
 //home
 Route::get('/home', [HomeController::class, 'index'])->name('home.index')->secure();
 
@@ -43,7 +44,19 @@ Route::resource('/vendas', VendasController::class)->middleware(Autenticador::cl
 //pedidos
 Route::resource('/pedidos', PedidosController::class)->middleware(Autenticador::class);
 //produtos
+Route::get('/produtos/{hash}', [ProdutoController::class, 'processaRetirada'])->middleware(Autenticador::class);
 Route::resource('produtos', ProdutoController::class)->middleware(Autenticador::class);
+
+
+
+Route::get('/teste/{hash}', 'TesteController@processRetirada')->name('retirada.process');
+
+
+
+//Gerar qrcode
+Route::resource('qrcode', QRCodeController::class)/*->middleware(Autenticador::class)*/;
+//Route::get('/qrcode', [QRCodeController::class, 'index'])->name('qrcode');
+
 
 Route::get('/checkout', [MercadoPagoController::class, 'iniciarPagamento'])->name('checkout')->middleware(Autenticador::class);
 Route::post('/webhook', [MercadoPagoController::class, 'webhook'])->name('webhook');
@@ -55,6 +68,5 @@ Route::get('login/google', [SocialiteController::class, 'redirectToProvider'])->
 Route::get('login/google/callback', [SocialiteController::class, 'hendProviderCallback']);
 Route::get('login/logout', [SocialiteController::class, 'destroy'])->name('logout');
 
-Route::get('/email', function (){
-    return new \App\Mail\NovoUsuario();
-});
+Route::get('/email_novo_usuario', function (){return new \App\Mail\NovoUsuario();});
+Route::get('/email_compra', function (){return new \App\Mail\CompraRealizada();});
