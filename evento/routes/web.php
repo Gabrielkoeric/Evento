@@ -1,9 +1,13 @@
 <?php
 
 use App\Http\Controllers\CompraController;
+use App\Http\Controllers\CompraIngressoController;
+use App\Http\Controllers\CheckController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\IngressosController;
+use App\Http\Controllers\LoteController;
 use App\Http\Controllers\MercadoPagoController;
+use App\Http\Controllers\NomeacaoController;
 use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\ProdutoController;
@@ -51,12 +55,26 @@ Route::get('/produtos/{hash}', [ProdutoController::class, 'processaRetirada'])->
 Route::resource('produtos', ProdutoController::class)->middleware(Autenticador::class);
 //ingressos
 Route::resource('ingressos', IngressosController::class)->middleware(Autenticador::class);
-
+//lote
+Route::resource('lote', LoteController::class)->middleware(Autenticador::class);
+//compra ingressos
+Route::resource('compra_ingressos', CompraIngressoController::class)->middleware(Autenticador::class);
+//nomeação de ingressos
+Route::resource('nomeacao', NomeacaoController::class)->middleware(Autenticador::class);
+//check-in e check-out
+Route::post('/check/checkout', [CheckController::class, 'checkout'])->name('check.checkout');
+Route::post('/check/checkin', [CheckController::class, 'checkin'])->name('check.checkin');
+Route::get('/check/{hash}', [CheckController::class, 'ingresso'])->middleware(Autenticador::class);
+Route::resource('check', CheckController::class)->middleware(Autenticador::class);
 
 
 //Gerar qrcode
 Route::resource('qrcode', QRCodeController::class)/*->middleware(Autenticador::class)*/;
 //Route::get('/qrcode', [QRCodeController::class, 'index'])->name('qrcode');
+Route::get('/payment', [PagamentoController::class, 'createPayment'])->name('payment.create');
+Route::get('/payment/success', [PagamentoController::class, 'secesso'])->name('payment.secesso');
+Route::get('/payment/failure', [PagamentoController::class, 'flaha'])->name('payment.flaha');
+Route::get('/payment/pending', [PagamentoController::class, 'pendente'])->name('payment.pendente');
 
 
 Route::get('/checkout', [MercadoPagoController::class, 'iniciarPagamento'])->name('checkout')->middleware(Autenticador::class);
@@ -74,8 +92,5 @@ Route::get('/email_compra', function (){return new \App\Mail\CompraRealizada();}
 
 
 
-Route::get('/payment', [PagamentoController::class, 'createPayment'])->name('payment.create');
-Route::get('/payment/success', [PagamentoController::class, 'secesso'])->name('payment.secesso');
-Route::get('/payment/failure', [PagamentoController::class, 'flaha'])->name('payment.flaha');
-Route::get('/payment/pending', [PagamentoController::class, 'pendente'])->name('payment.pendente');
+
 
