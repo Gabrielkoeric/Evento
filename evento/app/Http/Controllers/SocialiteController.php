@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NovoUsuario;
+use App\Models\AccessLog;
 use App\Models\User;
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -32,7 +34,15 @@ class SocialiteController extends Controller
             $usuario->imagem = $user->getAvatar();
             $usuario->save();
             $existingUser = User::where('email', $user->getEmail())->first();
+
+
             Auth::login($existingUser);
+            DB::table('usuario_perfil')->insert([
+                [
+                    'id' => $usuarioId = Auth::user()->id,
+                    'id_perfil' => 2,
+                ]
+            ]);
             //email
                 $email = new NovoUsuario($user->getName());
                 Mail::to($user->getEmail())->queue($email);
@@ -42,6 +52,11 @@ class SocialiteController extends Controller
                 $existingUser->save();
             }
         }
+
+        AccessLog::create([
+            'id' => $existingUser->id,
+            'ip_address' => request()->ip(),
+        ]);
 
         Auth::login($existingUser);
         session([
