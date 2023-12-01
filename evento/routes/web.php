@@ -14,6 +14,7 @@ use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\NomeacaoController;
 use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\PedidosController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\ResultadosController;
@@ -53,9 +54,9 @@ Route::resource('/vendas', VendasController::class)->middleware(Autenticador::cl
 //pedidos
 Route::resource('/pedidos', PedidosController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 //produtos
-Route::get('/produto/{hash}', [ProdutoController::class, 'processaRetirada'])/*->middleware(ControleAcesso::class)*/;
+//Route::get('/produto/{hash}', [ProdutoController::class, 'processaRetirada'])/*->middleware(ControleAcesso::class)*/;
 Route::post('/produtos/concluido', [ProdutoController::class, 'concluido'])->name('produtos.concluido')->middleware(ControleAcesso::class);
-Route::get('/produtos/{hash}', [ProdutoController::class, 'processaRetirada'])->middleware(Autenticador::class)/*->middleware(ControleAcesso::class)*/;
+Route::get('/produto_entrega/{hash}', [ProdutoController::class, 'processaRetirada'])->name('produto_entrega.index')->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 Route::resource('produtos', ProdutoController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 //ingressos
 Route::resource('ingressos', IngressosController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
@@ -73,12 +74,14 @@ Route::resource('resultados', ResultadosController::class)->middleware(Autentica
 //check-in e check-out
 Route::post('/check/checkout', [CheckController::class, 'checkout'])->name('check.checkout')->middleware(ControleAcesso::class);
 Route::post('/check/checkin', [CheckController::class, 'checkin'])->name('check.checkin')->middleware(ControleAcesso::class);
-Route::get('/check/{hash}', [CheckController::class, 'ingresso'])->middleware(Autenticador::class)/*->middleware(ControleAcesso::class)*/;
+Route::get('/check_liberacao/{hash}', [CheckController::class, 'ingresso'])->name('check_liberacao.index')->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 Route::resource('check', CheckController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 //logs access
 Route::resource('access_logs', AccessLogsController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 //logs check-in e check-out
 Route::resource('logs_check', LogsCheckController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
+//perfis de usuarios
+Route::resource('perfis_usuarios', PerfilController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 
 //Gerar qrcode
 Route::resource('qrcode', QRCodeController::class)/*->middleware(Autenticador::class)*/;
@@ -87,10 +90,12 @@ Route::get('/payment', [PagamentoController::class, 'createPayment'])->name('pay
 Route::get('/payment/success', [PagamentoController::class, 'secesso'])->name('payment.secesso');
 Route::get('/payment/failure', [PagamentoController::class, 'flaha'])->name('payment.flaha');
 Route::get('/payment/pending', [PagamentoController::class, 'pendente'])->name('payment.pendente');
+Route::post('/webhook', [PagamentoController::class, 'handleWebhook']);
+
 
 
 Route::get('/checkout', [MercadoPagoController::class, 'iniciarPagamento'])->name('checkout')->middleware(Autenticador::class);
-Route::post('/webhook', [MercadoPagoController::class, 'webhook'])->name('webhook');
+//Route::post('/webhook', [MercadoPagoController::class, 'webhook'])->name('webhook');
 
 
 //Route::get('login/google', "SocialiteController@redirectToProvider");

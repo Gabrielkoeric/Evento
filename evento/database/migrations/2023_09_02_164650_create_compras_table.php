@@ -20,10 +20,11 @@ return new class extends Migration
             $table->decimal('valor', 10, 2);
             $table->string('status');
             $table->string('hash');
+            $table->string('link_pagamento')->nullable();
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('usuarios');
-        });
+        });/*
         DB::unprepared('
             CREATE TRIGGER tr_compra_approved AFTER UPDATE ON compras FOR EACH ROW
             BEGIN
@@ -35,7 +36,7 @@ return new class extends Migration
                     ON DUPLICATE KEY UPDATE quantidade = quantidade + VALUES(quantidade);
                 END IF;
             END;
-        ');
+        ');*/
     }
 
     /**

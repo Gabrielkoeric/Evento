@@ -26,6 +26,8 @@
                                 <button type="button" class="btn btn-outline-secondary decrease">-</button>
                             </div>
                             <input type="text" class="form-control text-center number" name="quantidade[{{ $sql->id_produtos_disponiveis }}]" value="0" readonly>
+                            <!--<input type="text" class="form-control text-center number" name="quantidade[{{ $sql->id_produtos_disponiveis }}]" value="0" readonly data-maxQuantity="{{ $sql->quantidade }}">-->
+
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-outline-secondary increase">+</button>
                             </div>
@@ -41,9 +43,5 @@
             <button type="submit" class="btn btn-primary">Finalizar Solicitação de Retirada</button>
         @endif
     </form>
-
-    <footer>
-        <!--<div id="total">Total: R$ 0.00</div>-->
-    </footer>
     <script src="{{ asset('js/produtos.js') }}"></script>
 </x-layout>
