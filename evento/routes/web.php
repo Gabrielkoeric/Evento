@@ -6,6 +6,7 @@ use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CompraIngressoController;
 use App\Http\Controllers\CheckController;
 use App\Http\Controllers\EstoqueController;
+use App\Http\Controllers\GeraController;
 use App\Http\Controllers\IngressosController;
 use App\Http\Controllers\LogsCheckController;
 use App\Http\Controllers\LogsCheckoutController;
@@ -39,8 +40,12 @@ use App\Http\Controllers\SocialiteController;
 */
 
 //home
-Route::get('/', [HomeController::class, 'index'])->name('home.index')->secure();
-Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+Route::get('/', [HomeController::class, 'index'])->name('home.index')->middleware(Autenticador::class);
+Route::get('/home', [HomeController::class, 'index'])->name('home.index')->middleware(Autenticador::class);
+//gera
+Route::resource('/gera', GeraController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
+//Route::put('/marcar-entregue/{id_compra}', 'GeraController@marcarEntregue')->name('marcar_entregue')->middleware(Autenticador::class)->middleware(ControleAcesso::class);;
+//Route::put('/marcar-entregue/{id_compra}', [GeraController::class, 'marcarEntregue'])->name('marcar_entregue.update')->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 //usuarios
 Route::resource('/usuario', UsuarioController::class)->middleware(Autenticador::class)->middleware(ControleAcesso::class);
 //Produtos

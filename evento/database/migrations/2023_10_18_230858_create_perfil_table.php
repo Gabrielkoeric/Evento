@@ -29,6 +29,14 @@ return new class extends Migration
                 'id_perfil' => 2,
                 'nome' => 'Padrao',
             ],
+            [
+                'id_perfil' => 3,
+                'nome' => 'Festa',
+            ],
+            [
+                'id_perfil' => 4,
+                'nome' => 'Zerado',
+            ],
         ]);
     }
 

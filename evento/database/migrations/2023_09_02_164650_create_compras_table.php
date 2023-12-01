@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('hash');
             $table->string('link_pagamento')->nullable();
+            $table->boolean('entregue')->nullable();
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('usuarios');

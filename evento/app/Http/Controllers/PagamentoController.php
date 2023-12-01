@@ -42,7 +42,7 @@ class PagamentoController extends Controller
         $item->currency_id = 'BRL'; // Moeda em Reais
         $item->unit_price = $valor; // Preço do produto
 
-        // Crie um comprador (payer)
+       // Crie um comprador (payer)
         $payer = new Payer();
         $payer->name = "$nome";
         $payer->email = $email;
@@ -53,9 +53,15 @@ class PagamentoController extends Controller
                 ['id' => 'bolbradesco'],
                 ['id' => 'pec'],
             ],
-            'excluded_payment_types' => [],
+            'excluded_payment_types' => [
+                ['id' => 'credit_card'],
+                ['id' => 'debit_card'],
+                ['id' => 'prepaid_card'],
+                // Adicione outras formas de pagamento que você deseja excluir
+            ],
             'installments' => 1,
         ];
+
 
         // Crie uma preferência de pagamento
         $preference = new Preference();
@@ -63,9 +69,9 @@ class PagamentoController extends Controller
         $preference->payer = $payer;
         $preference->external_reference = $hash;
         $preference->back_urls = [
-            'success' => route('payment.secesso'), // Rota de sucesso
-            'failure' => route('payment.flaha'), // Rota de falha
-            'pending' => route('payment.pendente'), // Rota pendente
+            'success' => route('gera.index'), // Rota de sucesso
+            'failure' => route('gera.index'), // Rota de falha
+            'pending' => route('gera.index'), // Rota pendente
         ];
         $preference->auto_return = 'approved'; // Redirecionamento automático após pagamento aprovado
         $preference->payment_methods = $payment_methods;
@@ -84,7 +90,7 @@ class PagamentoController extends Controller
     }
 
     public function secesso(Request $request){
-
+/*
         $collectionStatus = $request->input('collection_status');
         $status = $request->input('status');
         $externalReference = $request->input('external_reference');
@@ -108,20 +114,20 @@ class PagamentoController extends Controller
                 ],
                 ['quantidade' => DB::raw('quantidade + ' . $resultado->quantidade_compra)]
             );
-        }
-        return to_route('home.index');
+        }*/
+        return to_route('gera.index');
     }
     public function flaha(){
         //dd("flaha");
-        return to_route('home.index');
+        return to_route('gera.index');
     }
     public function pendente(){
         //dd("pendente");
-        return to_route('home.index');
+        return to_route('gera.index');
     }
 
     public function handleWebhook(Request $request)
-    {/*
+    {
         // Configurar as credenciais do Mercado Pago
         $accessToken = config('services.mercado_pago.access_token');
         SDK::setAccessToken($accessToken);
@@ -165,23 +171,6 @@ class PagamentoController extends Controller
             ->where('hash', $externalReference) // Substitua $idDaCompra pelo ID da compra que você deseja atualizar
             ->update(['status' => $status]);
 
-        $resultados = DB::table('compras_estoque')
-            ->join('compras', 'compras_estoque.id_compra', '=', 'compras.id_compra')
-            ->where('compras.hash', $externalReference)
-            ->select('compras_estoque.*')
-            ->get();
-
-        $usuario = Auth::user()->id;
-
-        foreach ($resultados as $resultado) {
-            DB::table('produtos_disponiveis')->updateOrInsert(
-                [
-                    'id' => $usuario,
-                    'id_produto_estoque' => $resultado->id_produto_estoque,
-                ],
-                ['quantidade' => DB::raw('quantidade + ' . $resultado->quantidade_compra)]
-            );
-        }*/
         return response()->json(['status' => 'OK'], 200);
 
     }

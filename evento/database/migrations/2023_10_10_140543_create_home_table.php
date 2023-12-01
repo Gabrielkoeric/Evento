@@ -184,6 +184,14 @@ return new class extends Migration
                 'created_at' => null,
                 'updated_at' => null,
             ],
+            [
+                'nome' => 'Gera Compra',
+                'nome_tela' => 'gera',
+                'imagem_tela' => 'n/t',
+                'permite_home' => 1,
+                'created_at' => null,
+                'updated_at' => null,
+            ],
         ];
 
         DB::table('home')->insert($dadosPadraoHome);

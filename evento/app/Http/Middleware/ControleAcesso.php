@@ -26,7 +26,7 @@ class ControleAcesso
         $usuario = Auth::user()->id;
 
 
-// Consulta para obter os perfis do usuário
+        // Consulta para obter os perfis do usuário
         $perfisDoUsuario = DB::table('usuario_perfil')
             ->where('id', $usuario)
             ->pluck('id_perfil')
