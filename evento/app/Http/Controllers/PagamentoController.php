@@ -28,8 +28,8 @@ class PagamentoController extends Controller
         $id = $request->cookie('id');
         $valor = $request->cookie('valor');
         $hash = $request->cookie('hash');
-        $nome = Auth::user()->name;
-        $email = Auth::user()->email;
+        /*$nome = Auth::user()->name;
+        $email = Auth::user()->email;*/
         $accessToken = config('services.mercado_pago.access_token');
         // Configure suas credenciais do MercadoPago
         \MercadoPago\SDK::setAccessToken("$accessToken");
@@ -42,10 +42,13 @@ class PagamentoController extends Controller
         $item->currency_id = 'BRL'; // Moeda em Reais
         $item->unit_price = $valor; // Preço do produto
 
+
        // Crie um comprador (payer)
         $payer = new Payer();
-        $payer->name = "$nome";
-        $payer->email = $email;
+        $payer->name = "Capela Nossa Senhora das Graças";
+        $payer->email = "capela.serragrande@gmail.com";
+        /*$payer->name = "$nome";
+        $payer->email = $email;*/
 
         // Configurações de pagamento
         $payment_methods = [
@@ -86,7 +89,9 @@ class PagamentoController extends Controller
                 'link_pagamento' => $paymentUrl,
             ]);
         // Redirecione o usuário para a página de pagamento do MercadoPago
-        return redirect($paymentUrl);
+        //return redirect($paymentUrl);
+        return redirect()->to($paymentUrl);
+
     }
 
     public function secesso(Request $request){
@@ -136,20 +141,20 @@ class PagamentoController extends Controller
         // Consultar o status da compra
         $paymentId = $request->input('data.id');
         $payment = Payment::find_by_id($paymentId);
-        
+/*
         //pegar o id interno
         // Acessar os detalhes do item
         $items = $payment->additional_info->items;
 // Verificar se existem itens e obter o ID
         if (!empty($items)) {
             $itemId = $items[0]->id;
-            Log::info('ID do item: ' . $itemId);
-        }
+            //Log::info('ID do item: ' . $itemId);
+        }*/
         $externalReference = $payment->external_reference;
         $status = $payment->status;
 
         // Adicionar 'external_reference' ao log
-        Log::info('External Reference: ' . $externalReference);
+       // Log::info('External Reference: ' . $externalReference);
         DB::table('compras')
             ->where('hash', $externalReference) // Substitua $idDaCompra pelo ID da compra que você deseja atualizar
             ->update(['status' => $status]);

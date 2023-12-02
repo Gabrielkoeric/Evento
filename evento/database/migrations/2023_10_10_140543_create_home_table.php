@@ -187,7 +187,7 @@ return new class extends Migration
             [
                 'nome' => 'Gera Compra',
                 'nome_tela' => 'gera',
-                'imagem_tela' => 'n/t',
+                'imagem_tela' => 'storage/home/vendas.png',
                 'permite_home' => 1,
                 'created_at' => null,
                 'updated_at' => null,
